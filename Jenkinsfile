@@ -1,43 +1,36 @@
 pipeline {
-	agent {
-	    label 'Windows_Node'
-	}
+	agent none
 	stages {
-		stage('Git-Checkout') {
+		stage('Non-Parallel Stage') {
+			agent {
+					label "master"
+					}
 			steps {
-					echo "checking out from Git repo !!";
-					git branch: 'main', credentialsId: '3186a2d7-901a-4ffe-9921-fdc969b60742', url: 'https://github.com/PrashanthMothukuri/PrashanthM.git'
+					echo "This stage will be executed first !!";
 			}
 		}
 		
-		stage('Build') {
-			steps {
-					echo "Building the checked out project ";
-					bat 'Build.bat'
+		stage('Run Tests') {
+			parallel {
+				stage('Test on windows') { 
+					agent {
+						label "Windows_Node"
+					}
+					steps {
+							echo "Task1 on Agent ";
+					}
+				}
+		
+				stage('Test on Master') {
+					agent {
+						label "master"
+					}
+					steps {
+						echo "Task1 on Master";
+					}
+				}		
 			}
-		}
 		
-		stage('Unit-Test') {
-			steps {
-					echo "Running JUnit tests ";
-					bat 'Unit.bat'
-			}
-		}
-		
-		stage('Quality-Gate') {
-			steps {
-					echo "verifying quality gates";
-					bat 'Quality.bat'
-			}
-		}
-		
-		stage('Deploy') {
-			steps {
-					echo "Deploying  !!";
-					bat 'Deploy.bat'
-			}
-		}
-		
-		
+		}	
 	}
 }
