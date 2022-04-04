@@ -180,3 +180,4 @@ resource "aws_instance" "web-server-instance"{
 #         Name = "prod-subnet"
 #     }
 # }
+## https://github.com/Sanjeev-Thiyagarajan/Terraform-Crash-Course/blob/master/main.tf
